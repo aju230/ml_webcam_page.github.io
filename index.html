@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <h1>顔認識と手認識</h1>
+        <p>Webカメラから顔のメッシュと手の形を推論</p>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/addons/p5.dom.min.js"></script>
+        <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+    </head>
+    <body>
+        <script>
+            //手の認識の部分
+            let faceMesh;
+            let faces = [];
+            let options = { maxFaces: 1, refineLandmarks: false, flipHorizontal: false };
+            let handPose;
+            let video;
+            let hands = [];
+
+            function preload() {
+            // Load the handPose model
+            faceMesh = ml5.faceMesh(options);
+            handPose = ml5.handPose();
+            }
+
+            function setup() {
+            createCanvas(640, 480);
+            // Create the webcam video and hide it
+            video = createCapture(VIDEO);
+            video.size(640, 480);
+            video.hide();
+            // start detecting hands from the webcam video
+            faceMesh.detectStart(video, gotFaces);
+            handPose.detectStart(video, gotHands);
+            }
+
+            function draw() {
+            // Draw the webcam video
+            image(video, 0, 0, width, height);
+
+            for (let i = 0; i < faces.length; i++) {
+                let face = faces[i];
+                for (let j = 0; j < face.keypoints.length; j++) {
+                let keypoint = face.keypoints[j];
+                fill(0, 255, 0);
+                noStroke();
+                circle(keypoint.x, keypoint.y, 5);
+                }
+            }
+            // Draw all the tracked hand points
+            for (let i = 0; i < hands.length; i++) {
+                let hand = hands[i];
+                for (let j = 0; j < hand.keypoints.length; j++) {
+                let keypoint = hand.keypoints[j];
+                fill(0, 255, 0);
+                noStroke();
+                circle(keypoint.x, keypoint.y, 10);
+                }
+            }
+            }
+            // Callback function for when handPose outputs data
+            function gotHands(results) {
+            // save the output to the hands variable
+            hands = results;
+            }
+            
+            function gotFaces(results) {
+            // Save the output to the faces variable
+            faces = results;
+            }
+        </script>
+    </body>
+</html>
