@@ -19,13 +19,12 @@
         </style>
 
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <h1>ml5.jsを利用した骨格認識と顔認識と手認識</h1>
         <p>Webカメラから顔のメッシュと手の形を推論</p>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>　<!--p5.jsライブラリのインポート-->
         <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/addons/p5.dom.min.js"></script>
-        <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+        <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script> <!--ml5.jsライブラリのインポート-->
     </head>
     <body>
         <nav>
@@ -33,22 +32,20 @@
         <li>
             <div id="canvas"></div>
         <script>
-            //手の認識の部分
-            let faceMesh;
+            let faceMesh; //顔メッシュの定義
             let faces = [];
             let options = { maxFaces: 1, refineLandmarks: false, flipHorizontal: false };
-            let handPose;
+            let handPose; //手認識の定義
             let video;
             let hands = [];
-            let bodyPose;
+            let bodyPose; //骨格認識の定義
             let poses = [];
             let connections;
 
             function preload() {
-            // Load the handPose model
-            faceMesh = ml5.faceMesh(options);
-            handPose = ml5.handPose();
-            bodyPose = ml5.bodyPose();
+            faceMesh = ml5.faceMesh(options); //顔メッシュライブラリの読み込み
+            handPose = ml5.handPose(); //手認識ライブラリの読み込み
+            bodyPose = ml5.bodyPose(); //骨格認識ライブラリの読み込み
             }
 
             function setup() {
@@ -67,7 +64,7 @@
             }
 
             function draw() {
-            // Draw the webcam video
+            // webカメラから読み込んだ顔、手、骨格の位置を描写する
             image(video, 0, 0, width, height);
 
             for (let i = 0; i < faces.length; i++) {
@@ -96,7 +93,7 @@
                 let pointBIndex = connections[j][1];
                 let pointA = pose.keypoints[pointAIndex];
                 let pointB = pose.keypoints[pointBIndex];
-                // Only draw a line if both points are confident enough
+
                 if (pointA.confidence > 0.1 && pointB.confidence > 0.1) {
                     stroke(255, 0, 0);
                     strokeWeight(2);
@@ -109,7 +106,7 @@
                 let pose = poses[i];
                 for (let j = 0; j < pose.keypoints.length; j++) {
                 let keypoint = pose.keypoints[j];
-                // Only draw a circle if the keypoint's confidence is bigger than 0.1
+               
                 if (keypoint.confidence > 0.1) {
                     fill(0, 255, 0);
                     noStroke();
